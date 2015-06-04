@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+	<ImageView android:layout_width="match_parent"
+	           android:layout_height="match_parent"
+	           android:src="@drawable/baby"
+	           android:scaleType="centerCrop"
+	           tools:ignore="ContentDescription" />
+
+	<LinearLayout android:orientation="vertical"
+	              android:layout_width="match_parent"
+	              android:layout_height="wrap_content"
+	              android:layout_alignParentBottom="true"
+	              android:padding="16dp"
+	              android:background="#8FFF">
+
+		<TextView android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:text="@string/app_name"
+		          android:layout_gravity="center_horizontal"
+		          android:textSize="36sp"
+		          android:textColor="#306"
+		          android:textStyle="bold"
+				/>
+
+		<TextView android:layout_width="match_parent"
+		          android:layout_height="wrap_content"
+		          android:text="@string/subtitle"
+		          android:layout_margin="16dp"
+		          android:gravity="center_horizontal"
+		          android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+		<ImageView android:layout_width="wrap_content"
+		           android:layout_height="wrap_content"
+		           android:layout_gravity="end"
+		           android:src="@drawable/ic_chevron_right_white_36dp"
+		           android:padding="8dp"
+		           android:background="@drawable/next_button"
+		           android:contentDescription="@string/next_page"
+		           android:onClick="nextPage" />
+	</LinearLayout>
+</RelativeLayout>

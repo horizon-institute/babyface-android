@@ -1,0 +1,27 @@
+<resources>
+	<string name="app_name">BabyFace</string>
+
+	<string name="disclaim1">We care about you and your baby\'s personal data.</string>
+	<string name="disclaim2">The images you provide will only be used for this project, will be stored anonymously and will be destroyed afterwards.</string>
+	<string name="disclaim3">For more information about our privacy policy and terms of use, please visit out website.</string>
+	<string name="babyface_website">BabyFace Website</string>
+	<string name="terms_click">Click below to accept the terms and conditions</string>
+	<string name="next_page">Next Page</string>
+	<string name="nott_uni">The University of Nottingham</string>
+	<string name="about">By donating the images of your baby the University of Nottingham will create a mobile phone app that will allow doctors to estimate if a baby was born prematurely in places without ultrasound scans.</string>
+	<string name="take_photo">Take Photo</string>
+	<string name="subtitle">BabyFace collects images of your baby to help those in need.</string>
+	<string name="weight">Weight</string>
+	<string name="kilograms">kg</string>
+	<string name="noCameraTitle">Camera Error</string>
+	<string name="noCameraMessage">The was a problem communicating with the camera</string>
+	<string name="noCameraButton">Exit</string>
+	<string name="upload">Upload</string>
+	<string name="uploading">Uploading…</string>
+	<string name="thanks">Thank you for helping!</string>
+	<string name="share">Share</string>
+	<string name="retake">Retake</string>
+	<string name="reward_face">The data collected will be used to create software able to estimate the gestational age of babies. Gestational age can be estimated by looking at the number of wrinkles in babies\' feet and the shape of their ears.</string>
+	<string name="reward_ear">Estimating the correct gestational age of a premature baby can save their lives by allowing doctors to choose appropriate treatments.</string>
+	<string name="baby_photo">Baby Photo</string>
+</resources>

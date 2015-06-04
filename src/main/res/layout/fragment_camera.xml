@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/content_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+	<SurfaceView android:id="@+id/cameraView"
+	             android:layout_width="match_parent"
+	             android:layout_height="match_parent" />
+
+	<ImageView android:id="@+id/viewfinder"
+	           android:layout_width="match_parent"
+	           android:layout_height="match_parent"
+	           tools:ignore="ContentDescription"
+	           android:src="@drawable/face"
+	           android:scaleType="fitXY" />
+
+	<ImageView android:layout_width="wrap_content"
+	           android:layout_height="wrap_content"
+	           android:layout_gravity="bottom|center"
+	           android:id="@+id/photoButton"
+	           android:contentDescription="@string/take_photo"
+	           android:src="@drawable/ic_photo_camera_white_48dp"
+	           android:padding="16dp"
+	           android:background="?android:selectableItemBackground" />
+</FrameLayout>

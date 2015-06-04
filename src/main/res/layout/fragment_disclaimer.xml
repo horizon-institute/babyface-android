@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="bottom|center_horizontal"
+              android:padding="16dp"
+              tools:context=".activity.MainActivity"
+              android:onClick="nextPage">
+
+	<LinearLayout android:layout_width="match_parent"
+	              android:layout_height="0dp"
+	              android:orientation="vertical"
+	              android:layout_weight="1"
+	              android:gravity="center">
+
+		<TextView android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:text="@string/disclaim1"
+		          android:padding="16dp"
+		          android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+		<TextView android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:text="@string/disclaim2"
+		          android:padding="16dp"
+		          android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+		          android:textStyle="bold" />
+
+		<TextView android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:text="@string/disclaim3"
+		          android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+		          android:paddingLeft="16dp"
+		          android:paddingRight="16dp"
+		          android:paddingTop="16dp" />
+
+		<TextView android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:text="@string/babyface_website"
+		          android:textColor="#118"
+		          android:padding="16dp"
+		          android:onClick="openURL"
+		          android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+		<TextView android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:text="@string/terms_click"
+		          android:paddingTop="32dp"
+		          android:paddingLeft="16dp"
+		          android:paddingRight="16dp"
+		          android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+	</LinearLayout>
+
+	<ImageView android:layout_width="wrap_content"
+	           android:layout_height="wrap_content"
+	           android:layout_gravity="end"
+	           android:src="@drawable/ic_chevron_right_white_36dp"
+	           android:padding="8dp"
+	           android:background="@drawable/next_button"
+	           android:layout_marginTop="16dp"
+	           android:contentDescription="@string/next_page" />
+</LinearLayout>
