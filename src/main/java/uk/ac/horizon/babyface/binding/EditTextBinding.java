@@ -59,7 +59,7 @@ public class EditTextBinding<T> extends EditorBinding<EditText, T>
 			public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
 			{
 				handler.removeCallbacksAndMessages(null);
-				handler.postDelayed(userStoppedTyping, 1000);
+				handler.postDelayed(userStoppedTyping, 3000);
 			}
 		});
 		view.setOnFocusChangeListener(new View.OnFocusChangeListener()

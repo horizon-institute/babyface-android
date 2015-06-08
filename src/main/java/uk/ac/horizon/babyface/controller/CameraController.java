@@ -238,7 +238,7 @@ public class CameraController implements SurfaceHolder.Callback
 					}
 					Log.i("SUP.PREVIEW", "Selected: " + bestFitSoFar.width + "x" + bestFitSoFar.height + " (" + ((float) bestFitSoFar.width / (float) bestFitSoFar.height) + ")");
 					parameters.setPreviewSize(bestFitSoFar.width, bestFitSoFar.height);
-					parameters.setPictureSize(bestFitSoFar.width, bestFitSoFar.height);
+					//parameters.setPictureSize(bestFitSoFar.width, bestFitSoFar.height);
 
 					camera.setParameters(parameters);
 
@@ -347,7 +347,6 @@ public class CameraController implements SurfaceHolder.Callback
 		{  // back-facing
 			rotation = (info.orientation - degrees + 360) % 360;
 		}
-		Log.i(TAG, "Device Orientation = " + degrees + "°, camera orientation = " + info.orientation + "°, result is " + rotation + "°");
 
 		return rotation;
 	}

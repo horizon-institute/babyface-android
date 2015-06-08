@@ -23,5 +23,5 @@
 	           android:contentDescription="@string/take_photo"
 	           android:src="@drawable/ic_photo_camera_white_48dp"
 	           android:padding="16dp"
-	           android:background="?android:selectableItemBackground" />
+	           android:background="?android:attr/selectableItemBackground" />
 </FrameLayout>

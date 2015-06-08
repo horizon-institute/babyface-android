@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import uk.ac.horizon.babyface.R;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -38,10 +39,12 @@ public class CameraFragment extends PageFragment implements SurfaceHolder.Callba
 		super.setUserVisibleHint(isVisibleToUser);
 		if (isVisibleToUser)
 		{
+			Log.i("", "Visible");
 			try
 			{
 				if (getCamera() != null)
 				{
+					getCamera().release();
 					getCamera().start(surfaceHolder);
 				}
 			}
@@ -102,6 +105,11 @@ public class CameraFragment extends PageFragment implements SurfaceHolder.Callba
 							final String title = "IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
 							final String DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
 							final String DIRECTORY = DCIM + "/Camera";
+							final File directory = new File(DIRECTORY);
+							if (!directory.exists())
+							{
+								directory.mkdir();
+							}
 							final String path = DIRECTORY + '/' + title + ".jpg";
 
 							int angleToRotate = getCamera().getRotation();
@@ -176,29 +184,20 @@ public class CameraFragment extends PageFragment implements SurfaceHolder.Callba
 
 	public void surfaceCreated(SurfaceHolder holder)
 	{
-		// The Surface has been created, now tell the camera where to draw the preview.
-
-		try
-		{
-			getCamera().start(holder);
-		}
-		catch (Exception e)
-		{
-			Log.d("", "Error setting camera preview: " + e.getMessage());
-		}
 	}
 
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
 	{
-		try
-		{
-			getCamera().start(holder);
-		}
-		catch (Exception e)
-		{
-			Log.d("", "Error setting camera preview: " + e.getMessage());
-		}
+//		Log.i("", "Surface Changed");
+//		try
+//		{
+//			getCamera().start(holder);
+//		}
+//		catch (Exception e)
+//		{
+//			Log.d("", "Error setting camera preview: " + e.getMessage());
+//		}
 	}
 
 	@Override
