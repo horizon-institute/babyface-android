@@ -3,6 +3,7 @@ package uk.ac.horizon.babyface.controller;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Build;
@@ -104,7 +105,13 @@ public class CameraController implements SurfaceHolder.Callback
 			AlertDialog.Builder builder = new AlertDialog.Builder(context);
 			builder.setTitle(R.string.noCameraTitle);
 			builder.setMessage(R.string.noCameraMessage);
-			builder.setPositiveButton(R.string.noCameraButton, null);
+			builder.setPositiveButton(R.string.noCameraButton, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which)
+				{
+
+				}
+			});
 			AlertDialog alertDialog = builder.create();
 			alertDialog.show();
 		}

@@ -16,6 +16,16 @@
 	           android:src="@drawable/face"
 	           android:scaleType="fitXY" />
 
+	<ProgressBar
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="bottom|center"
+			android:id="@+id/progress"
+			android:layout_margin="16dp"
+			android:indeterminate="false"
+			android:visibility="gone"
+			style="@style/Widget.AppCompat.ProgressBar" />
+
 	<ImageView android:layout_width="wrap_content"
 	           android:layout_height="wrap_content"
 	           android:layout_gravity="bottom|center"
@@ -23,5 +33,6 @@
 	           android:contentDescription="@string/take_photo"
 	           android:src="@drawable/ic_photo_camera_white_48dp"
 	           android:padding="16dp"
-	           android:background="?android:attr/selectableItemBackground" />
+	           android:visibility="gone"
+	           android:background="?attr/selectableItemBackground" />
 </FrameLayout>

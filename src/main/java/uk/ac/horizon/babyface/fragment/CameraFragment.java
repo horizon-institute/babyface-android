@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -25,9 +24,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+@SuppressWarnings("deprecation")
 public class CameraFragment extends PageFragment implements SurfaceHolder.Callback
 {
 	private SurfaceHolder surfaceHolder;
+	private View photoButton;
 
 	public CameraFragment()
 	{
@@ -37,6 +38,7 @@ public class CameraFragment extends PageFragment implements SurfaceHolder.Callba
 	public void setUserVisibleHint(boolean isVisibleToUser)
 	{
 		super.setUserVisibleHint(isVisibleToUser);
+		Log.i("", "Camera visible " + isVisibleToUser);
 		if (isVisibleToUser)
 		{
 			Log.i("", "Visible");
@@ -46,11 +48,19 @@ public class CameraFragment extends PageFragment implements SurfaceHolder.Callba
 				{
 					getCamera().release();
 					getCamera().start(surfaceHolder);
+					photoButton.setVisibility(View.VISIBLE);
 				}
 			}
 			catch (Exception e)
 			{
 				Log.w("", e.getMessage(), e);
+			}
+		}
+		else
+		{
+			if(getCamera() != null)
+			{
+				getCamera().release();
 			}
 		}
 	}
@@ -88,79 +98,93 @@ public class CameraFragment extends PageFragment implements SurfaceHolder.Callba
 			viewfinder.setImageResource(viewID);
 		}
 
-		View button = rootView.findViewById(R.id.photoButton);
-		button.setOnClickListener(new View.OnClickListener()
+		final View progress = rootView.findViewById(R.id.progress);
+		photoButton = rootView.findViewById(R.id.photoButton);
+		photoButton.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(View v)
 			{
+				photoButton.setVisibility(View.GONE);
+				progress.setVisibility(View.VISIBLE);
 				getCamera().takePicture(new Camera.PictureCallback()
 				{
 					@Override
-					public void onPictureTaken(byte[] data, Camera camera)
+					public void onPictureTaken(final byte[] data, Camera camera)
 					{
-						try
+						Thread thread = new Thread()
 						{
-							// Create a media file name
-							final String title = "IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
-							final String DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
-							final String DIRECTORY = DCIM + "/Camera";
-							final File directory = new File(DIRECTORY);
-							if (!directory.exists())
+							@Override
+							public void run()
 							{
-								directory.mkdir();
+								try
+								{
+									// Create a media file name
+									final String title = "IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+									final String DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
+									final String DIRECTORY = DCIM + "/Camera";
+									final File directory = new File(DIRECTORY);
+									if (!directory.exists())
+									{
+										directory.mkdir();
+									}
+									final String path = DIRECTORY + '/' + title + ".jpg";
+
+									int angleToRotate = getCamera().getRotation();
+									// Solve image inverting problem
+									//angleToRotate = angleToRotate + 180;
+									Bitmap orignalImage = BitmapFactory.decodeByteArray(data, 0, data.length);
+									Bitmap bitmapImage = rotate(orignalImage, angleToRotate);
+
+									OutputStream out = new FileOutputStream(path);
+									bitmapImage.compress(Bitmap.CompressFormat.JPEG, 90, out);
+									out.close();
+
+									String image = "face";
+									if (getArguments() != null && getArguments().containsKey("image"))
+									{
+										image = getArguments().getString("image");
+									}
+
+									getController().getModel().getImages().put(image, path);
+
+									getActivity().runOnUiThread(new Runnable()
+									{
+										@Override
+										public void run()
+										{
+											getController().notifyChanges("images");
+											progress.setVisibility(View.GONE);
+											nextPage(null);
+										}
+									});
+
+									// Insert into MediaStore.
+									ContentValues values = new ContentValues(5);
+									values.put(MediaStore.Images.Media.TITLE, "BabyFace " + image);
+									values.put(MediaStore.Images.Media.DISPLAY_NAME, "BabyFace " + image);
+									values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+									// Add the date meta data to ensure the image is added at the front of the gallery
+									values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis());
+									values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+									values.put(MediaStore.Images.Media.DATA, path);
+									// Clockwise rotation in degrees. 0, 90, 180, or 270.
+									//values.put(MediaStore.Images.Media.ORIENTATION, getActivity().getWindowManager().getDefaultDisplay().getRotation() + 90);
+
+									getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+								}
+								catch (Exception e)
+								{
+									Log.e("", e.getMessage(), e);
+									//progress.setVisibility(View.GONE);
+									//photoButton.setVisibility(View.VISIBLE);
+									//nextPage(null);
+								}
 							}
-							final String path = DIRECTORY + '/' + title + ".jpg";
+						};
 
-							int angleToRotate = getCamera().getRotation();
-							// Solve image inverting problem
-							//angleToRotate = angleToRotate + 180;
-							Bitmap orignalImage = BitmapFactory.decodeByteArray(data, 0, data.length);
-							Bitmap bitmapImage = rotate(orignalImage, angleToRotate);
+						thread.start();
 
-							OutputStream out = new FileOutputStream(path);
-							bitmapImage.compress(Bitmap.CompressFormat.JPEG, 90, out);
-							out.close();
-
-							String image = "face";
-							if (getArguments() != null && getArguments().containsKey("image"))
-							{
-								image = getArguments().getString("image");
-							}
-
-							// Insert into MediaStore.
-							ContentValues values = new ContentValues(5);
-							values.put(MediaStore.Images.Media.TITLE, "BabyFace " + image);
-							values.put(MediaStore.Images.Media.DISPLAY_NAME, "BabyFace " + image);
-							values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-							// Add the date meta data to ensure the image is added at the front of the gallery
-							values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis());
-							values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-							values.put(MediaStore.Images.Media.DATA, path);
-							// Clockwise rotation in degrees. 0, 90, 180, or 270.
-							//values.put(MediaStore.Images.Media.ORIENTATION, getActivity().getWindowManager().getDefaultDisplay().getRotation() + 90);
-
-							Uri uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-//							String image = "face";
-//							if (getArguments() != null && getArguments().containsKey("image"))
-//							{
-//								image = getArguments().getString("image");
-//							}
-
-							getController().getModel().getImages().put(image, path);
-							getController().notifyChanges("images");
-
-							nextPage(null);
-						}
-						catch (Throwable e)
-						{
-							// This can happen when the external volume is already mounted, but
-							// MediaScanner has not notify MediaProvider to add that volume.
-							// The picture is still safe and MediaScanner will find it and
-							// insert it into MediaProvider. The only problem is that the user
-							// cannot click the thumbnail to review the picture.
-							Log.e("", e.getMessage(), e);
-						}
 					}
 
 				});
