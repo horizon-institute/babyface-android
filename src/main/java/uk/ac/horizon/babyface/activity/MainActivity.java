@@ -122,7 +122,7 @@ public class MainActivity extends ControllerActivity<BabyData>
 		Intent intent=new Intent(android.content.Intent.ACTION_SEND);
 		intent.setType("text/plain");
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-		intent.putExtra(Intent.EXTRA_TEXT, "We’ve just helped @GestStudy in their research to automatically calculate the gestational age of premature babies. You can help, too! http://tinyurl.com/gestationalage-estimation");
+		intent.putExtra(Intent.EXTRA_TEXT, "We’ve just helped @GestStudy research to save premature babies in developing countries. You can help, too! http://tinyurl.com/p6fyydk");
 		startActivity(Intent.createChooser(intent, "Share"));
 	}
 

@@ -245,7 +245,30 @@ public class CameraController implements SurfaceHolder.Callback
 					}
 					Log.i("SUP.PREVIEW", "Selected: " + bestFitSoFar.width + "x" + bestFitSoFar.height + " (" + ((float) bestFitSoFar.width / (float) bestFitSoFar.height) + ")");
 					parameters.setPreviewSize(bestFitSoFar.width, bestFitSoFar.height);
-					//parameters.setPictureSize(bestFitSoFar.width, bestFitSoFar.height);
+
+					List<Camera.Size> supportedPictureSizes = parameters.getSupportedPictureSizes();
+					bestFitSoFar = null;
+					ratioDifferenceOfBestFitSoFar = 0;
+					for (Camera.Size supportedSize : supportedPictureSizes)
+					{
+						if(supportedSize.width > 2048 || supportedSize.height > 2048)
+						{
+							continue;
+						}
+						float ratio = (float) supportedSize.width / (float) supportedSize.height;
+						float ratioDifference = Math.abs(ratio - ratioOfSurface);
+
+						Log.i("SUP.PREVIEW", supportedSize.width + "x" + supportedSize.height + " (" + ratio + ")");
+
+						if (bestFitSoFar == null || ratioDifference < ratioDifferenceOfBestFitSoFar)
+						{
+							bestFitSoFar = supportedSize;
+							ratioDifferenceOfBestFitSoFar = ratioDifference;
+						}
+
+					}
+					Log.i("SUP.PREVIEW", "Selected: " + bestFitSoFar.width + "x" + bestFitSoFar.height + " (" + ((float) bestFitSoFar.width / (float) bestFitSoFar.height) + ")");
+					parameters.setPictureSize(bestFitSoFar.width, bestFitSoFar.height);
 
 					camera.setParameters(parameters);
 
