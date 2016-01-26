@@ -122,7 +122,7 @@ public class MainActivity extends ControllerActivity<BabyData>
 		Intent intent=new Intent(android.content.Intent.ACTION_SEND);
 		intent.setType("text/plain");
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-		intent.putExtra(Intent.EXTRA_TEXT, "We’ve just helped @GestStudy research to save premature babies in developing countries. You can help, too! http://tinyurl.com/p6fyydk");
+		intent.putExtra(Intent.EXTRA_TEXT, "We’ve just helped @GestStudy research to save premature babies in developing countries. You can help, too! http://cvl.cs.nott.ac.uk/resources/babyface/index.html");
 		startActivity(Intent.createChooser(intent, "Share"));
 	}
 

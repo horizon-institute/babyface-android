@@ -15,6 +15,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+
 import uk.ac.horizon.babyface.R;
 
 import java.io.File;
@@ -74,6 +76,11 @@ public class CameraFragment extends PageFragment implements SurfaceHolder.Callba
 		return fragment;
 	}
 
+	private String capitalize(final String line)
+	{
+		return Character.toUpperCase(line.charAt(0)) + line.substring(1);
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState)
@@ -91,11 +98,22 @@ public class CameraFragment extends PageFragment implements SurfaceHolder.Callba
 			image = getArguments().getString("image");
 		}
 
-		int viewID = getResources().getIdentifier(image, "drawable", getActivity().getPackageName());
-		if (viewID != 0)
+		int imageID = getResources().getIdentifier(image, "drawable", getActivity().getPackageName());
+		if (imageID != 0)
 		{
 			ImageView viewfinder = (ImageView) rootView.findViewById(R.id.viewfinder);
-			viewfinder.setImageResource(viewID);
+			viewfinder.setImageResource(imageID);
+		}
+
+		int stringID = getResources().getIdentifier(image, "string", getActivity().getPackageName());
+		TextView hintText = (TextView) rootView.findViewById(R.id.photoText);
+		if (stringID != 0)
+		{
+			hintText.setText(stringID);
+		}
+		else
+		{
+			hintText.setText(capitalize(image));
 		}
 
 		final View progress = rootView.findViewById(R.id.progress);
@@ -184,7 +202,6 @@ public class CameraFragment extends PageFragment implements SurfaceHolder.Callba
 						};
 
 						thread.start();
-
 					}
 
 				});

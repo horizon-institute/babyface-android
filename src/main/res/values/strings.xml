@@ -21,6 +21,9 @@
 	<string name="thanks">Thank you for helping!</string>
 	<string name="share">Share</string>
 	<string name="retake">Retake</string>
+    <string name="face">Face</string>
+    <string name="ear">Right Ear</string>
+    <string name="foot">Right Foot</string>
 	<string name="reward_face">The data collected will be used to create software able to estimate the gestational age of babies. Gestational age can be estimated by looking at the number of wrinkles in babies\' feet and the shape of their ears.</string>
 	<string name="reward_ear">Estimating the correct gestational age of a premature baby can save their lives by allowing doctors to choose appropriate treatments.</string>
 	<string name="baby_photo">Baby Photo</string>
