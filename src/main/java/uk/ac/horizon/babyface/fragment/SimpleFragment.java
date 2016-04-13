@@ -16,7 +16,7 @@ public class SimpleFragment extends PageFragment
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState)
 	{
-		int layout = R.layout.fragment_welcome;
+		int layout = R.layout.welcome;
 		if(getArguments() != null)
 		{
 			layout = getArguments().getInt("layout", layout);

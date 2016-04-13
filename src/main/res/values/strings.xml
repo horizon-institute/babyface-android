@@ -5,14 +5,11 @@
 	<string name="disclaim2">The images you provide will only be used for this project, will be stored anonymously and will be destroyed afterwards.</string>
 	<string name="disclaim3">For more information about our privacy policy and terms of use, please visit out website.</string>
 	<string name="babyface_website">BabyFace Website</string>
-	<string name="terms_click">Click below to accept the terms and conditions</string>
-	<string name="next_page">Next Page</string>
+	<string name="terms_click">Click next to accept the terms and conditions</string>
 	<string name="nott_uni">The University of Nottingham</string>
 	<string name="about">By donating the images of your baby the University of Nottingham will create a mobile phone app that will allow doctors to estimate if a baby was born prematurely in places without ultrasound scans.</string>
 	<string name="take_photo">Take Photo</string>
 	<string name="subtitle">BabyFace collects images of your baby to help those in need.</string>
-	<string name="weight">Weight</string>
-	<string name="kilograms">kg</string>
 	<string name="noCameraTitle">Camera Error</string>
 	<string name="noCameraMessage">The was a problem communicating with the camera</string>
 	<string name="noCameraButton">Exit</string>
@@ -20,13 +17,43 @@
 	<string name="uploading">Uploading…</string>
 	<string name="thanks">Thank you for helping!</string>
 	<string name="share">Share</string>
-	<string name="retake">Retake</string>
-    <string name="face">Face</string>
-    <string name="ear">Right Ear</string>
-    <string name="foot">Right Foot</string>
-	<string name="reward_face">The data collected will be used to create software able to estimate the gestational age of babies. Gestational age can be estimated by looking at the number of wrinkles in babies\' feet and the shape of their ears.</string>
-	<string name="reward_ear">Estimating the correct gestational age of a premature baby can save their lives by allowing doctors to choose appropriate treatments.</string>
+    <string name="face_title">Face</string>
+    <string name="ear_title">Right Ear</string>
+    <string name="foot_title">Right Foot</string>
+	<string name="foot_reward">The data collected will be used to create software able to estimate the gestational age of babies.</string>
+	<string name="ear_reward">Estimating the correct gestational age of a premature baby can save their lives by allowing doctors to choose appropriate treatments.</string>
+    <string name="face_reward">Gestational age can be estimated by looking at the number of wrinkles in babies\' feet and the shape of their ears.</string>
 	<string name="baby_photo">Baby Photo</string>
 	<string name="retry">Retry</string>
 	<string name="error_upload">Error Uploading</string>
+    <string name="gender_question">Did you have a boy or a girl?</string>
+    <string-array name="gender_list">
+        <item>Boy</item>
+        <item>Girl</item>
+    </string-array>
+    <string name="ethnicity_question">What ethnicity is your baby?</string>
+    <string-array name="ethnicity_list">
+        <item>White</item>
+        <item>Asian</item>
+        <item>Black</item>
+        <item>Mixed</item>
+        <item>Other</item>
+        <item>Unknown</item>
+    </string-array>
+    <string name="weight_question">What did your baby weigh at birth?</string>
+    <string name="camera_confirm">You will now be asked to take photos of your baby\'s face, right ear and right foot. Try to take the picture with as much of your baby\'s face, ear or foot within the outline as possible.</string>
+    <string name="headCircumference_question">What was your baby\'s head circumference at birth?</string>
+    <string name="birthDate_question">What was the date of birth of your baby?</string>
+    <string name="expectedDate_question">What was your expected date of delivery?</string>
+    <string name="expectedBasis_question">What was your expected date of delivery based on?</string>
+    <string name="previous">Previous</string>
+    <string name="start"/>
+    <string name="copyright">Copyright © 2015–2016 University of Nottingham</string>
+    <string name="next">Next</string>
+    <string-array name="expectedBasis_list">
+        <item>Ultrasound</item>
+        <item>Last Menstral Period</item>
+        <item>Estimate</item>
+        <item>Other</item>
+    </string-array>
 </resources>

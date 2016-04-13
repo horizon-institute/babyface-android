@@ -1,36 +1,44 @@
 package uk.ac.horizon.babyface.fragment;
 
+import android.Manifest;
 import android.content.ContentValues;
+import android.content.ContextWrapper;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import uk.ac.horizon.babyface.R;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.UUID;
+
+import uk.ac.horizon.babyface.R;
+import uk.ac.horizon.babyface.camera.CameraView;
 
 @SuppressWarnings("deprecation")
-public class CameraFragment extends PageFragment implements SurfaceHolder.Callback
+public class CameraFragment extends PageFragment
 {
-	private SurfaceHolder surfaceHolder;
+	private static final int CAMERA_PERMISSION_REQUEST = 47;
+	private static final int STORAGE_PERMISSION_REQUEST = 57;
 	private View photoButton;
+	private CameraView cameraView;
+	private String title;
+	private Bitmap image;
+	private View progress;
 
 	public CameraFragment()
 	{
@@ -40,38 +48,38 @@ public class CameraFragment extends PageFragment implements SurfaceHolder.Callba
 	public void setUserVisibleHint(boolean isVisibleToUser)
 	{
 		super.setUserVisibleHint(isVisibleToUser);
-		Log.i("", "Camera visible " + isVisibleToUser);
-		if (isVisibleToUser)
+		if (cameraView != null)
 		{
-			Log.i("", "Visible");
-			try
+			if (isVisibleToUser)
 			{
-				if (getCamera() != null)
+				if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
 				{
-					getCamera().release();
-					getCamera().start(surfaceHolder);
-					photoButton.setVisibility(View.VISIBLE);
+					requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST);
+				}
+				else
+				{
+					cameraView.startCamera();
 				}
 			}
-			catch (Exception e)
+			else
 			{
-				Log.w("", e.getMessage(), e);
-			}
-		}
-		else
-		{
-			if(getCamera() != null)
-			{
-				getCamera().release();
+				new Thread()
+				{
+					@Override
+					public void run()
+					{
+						cameraView.stopCamera();
+					}
+				}.start();
 			}
 		}
 	}
 
-	public static CameraFragment create(String image)
+	public static CameraFragment create(String param)
 	{
-		Bundle bundle = new Bundle();
-		bundle.putString("image", image);
-		CameraFragment fragment = new CameraFragment();
+		final Bundle bundle = new Bundle();
+		bundle.putString("param", param);
+		final CameraFragment fragment = new CameraFragment();
 		fragment.setArguments(bundle);
 		return fragment;
 	}
@@ -85,39 +93,42 @@ public class CameraFragment extends PageFragment implements SurfaceHolder.Callba
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState)
 	{
-		View rootView = inflater.inflate(R.layout.fragment_camera, container, false);
+		View rootView = inflater.inflate(R.layout.camera, container, false);
 
-		SurfaceView surfaceView = (SurfaceView) rootView.findViewById(R.id.cameraView);
-		surfaceHolder = surfaceView.getHolder();
-		surfaceHolder.addCallback(this);
-		surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
-		String image = "face";
-		if (getArguments() != null && getArguments().containsKey("image"))
+		cameraView = (CameraView) rootView.findViewById(R.id.cameraView);
+		cameraView.setCallback(new CameraView.Callback()
 		{
-			image = getArguments().getString("image");
-		}
+			@Override
+			public void started()
+			{
+				getActivity().runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						progress.setVisibility(View.GONE);
+						photoButton.setVisibility(View.VISIBLE);
+					}
+				});
+			}
+		});
 
-		int imageID = getResources().getIdentifier(image, "drawable", getActivity().getPackageName());
+		final String param = getParam();
+		int imageID = getResources().getIdentifier(param, "drawable", getActivity().getPackageName());
 		if (imageID != 0)
 		{
 			ImageView viewfinder = (ImageView) rootView.findViewById(R.id.viewfinder);
 			viewfinder.setImageResource(imageID);
 		}
 
-		int stringID = getResources().getIdentifier(image, "string", getActivity().getPackageName());
+		title = getString(param + "_title", capitalize(param));
 		TextView hintText = (TextView) rootView.findViewById(R.id.photoText);
-		if (stringID != 0)
-		{
-			hintText.setText(stringID);
-		}
-		else
-		{
-			hintText.setText(capitalize(image));
-		}
+		hintText.setText(title);
 
-		final View progress = rootView.findViewById(R.id.progress);
+		progress = rootView.findViewById(R.id.progress);
+		progress.setVisibility(View.VISIBLE);
 		photoButton = rootView.findViewById(R.id.photoButton);
+		photoButton.setVisibility(View.GONE);
 		photoButton.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
@@ -125,83 +136,64 @@ public class CameraFragment extends PageFragment implements SurfaceHolder.Callba
 			{
 				photoButton.setVisibility(View.GONE);
 				progress.setVisibility(View.VISIBLE);
-				getCamera().takePicture(new Camera.PictureCallback()
+				cameraView.takePicture(new Camera.PictureCallback()
 				{
 					@Override
 					public void onPictureTaken(final byte[] data, Camera camera)
 					{
-						Thread thread = new Thread()
+						new Thread()
 						{
 							@Override
 							public void run()
 							{
 								try
 								{
-									// Create a media file name
-									final String title = "IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
-									final String DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
-									final String DIRECTORY = DCIM + "/Camera";
-									final File directory = new File(DIRECTORY);
-									if (!directory.exists())
-									{
-										directory.mkdir();
-									}
-									final String path = DIRECTORY + '/' + title + ".jpg";
-
-									int angleToRotate = getCamera().getRotation();
+									int angleToRotate = cameraView.getInfo().getRotation();
 									// Solve image inverting problem
 									//angleToRotate = angleToRotate + 180;
 									Bitmap orignalImage = BitmapFactory.decodeByteArray(data, 0, data.length);
-									Bitmap bitmapImage = rotate(orignalImage, angleToRotate);
+									image = rotate(orignalImage, angleToRotate);
 
-									OutputStream out = new FileOutputStream(path);
-									bitmapImage.compress(Bitmap.CompressFormat.JPEG, 90, out);
-									out.close();
-
-									String image = "face";
-									if (getArguments() != null && getArguments().containsKey("image"))
+									if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
 									{
-										image = getArguments().getString("image");
-									}
-
-									getController().getModel().getImages().put(image, path);
-
-									getActivity().runOnUiThread(new Runnable()
-									{
-										@Override
-										public void run()
+										if (!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE))
 										{
-											getController().notifyChanges("images");
-											progress.setVisibility(View.GONE);
-											nextPage(null);
+											requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_REQUEST);
 										}
-									});
-
-									// Insert into MediaStore.
-									ContentValues values = new ContentValues(5);
-									values.put(MediaStore.Images.Media.TITLE, "BabyFace " + image);
-									values.put(MediaStore.Images.Media.DISPLAY_NAME, "BabyFace " + image);
-									values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-									// Add the date meta data to ensure the image is added at the front of the gallery
-									values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis());
-									values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-									values.put(MediaStore.Images.Media.DATA, path);
-									// Clockwise rotation in degrees. 0, 90, 180, or 270.
-									//values.put(MediaStore.Images.Media.ORIENTATION, getActivity().getWindowManager().getDefaultDisplay().getRotation() + 90);
-
-									getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+										else
+										{
+											writeToLocal();
+											getActivity().runOnUiThread(new Runnable()
+											{
+												@Override
+												public void run()
+												{
+													nextPage();
+												}
+											});
+										}
+									}
+									else
+									{
+										writeToMedia();
+										getActivity().runOnUiThread(new Runnable()
+										{
+											@Override
+											public void run()
+											{
+												nextPage();
+											}
+										});
+									}
 								}
 								catch (Exception e)
 								{
-									Log.e("", e.getMessage(), e);
-									//progress.setVisibility(View.GONE);
-									//photoButton.setVisibility(View.VISIBLE);
-									//nextPage(null);
+									Log.e("PHOTO", e.getMessage(), e);
+									progress.setVisibility(View.GONE);
+									photoButton.setVisibility(View.VISIBLE);
 								}
 							}
-						};
-
-						thread.start();
+						}.start();
 					}
 
 				});
@@ -212,7 +204,132 @@ public class CameraFragment extends PageFragment implements SurfaceHolder.Callba
 		return rootView;
 	}
 
-	public static Bitmap rotate(Bitmap bitmap, int degree)
+	private void writeToLocal()
+	{
+		try
+		{
+			final String filename = "IMG_" + UUID.randomUUID().toString() + ".jpg";
+			ContextWrapper cw = new ContextWrapper(getContext());
+			final File file = new File(cw.getFilesDir(), filename);
+
+			final FileOutputStream fos = new FileOutputStream(file);
+			image.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+			image = null;
+			fos.close();
+			setValue(file);
+		}
+		catch (Exception e)
+		{
+			Log.e("PHOTO", e.getMessage(), e);
+		}
+
+	}
+
+	private void writeToMedia()
+	{
+		try
+		{
+			final String filename = "IMG_" + UUID.randomUUID().toString();
+			final String DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
+			final String DIRECTORY = DCIM + "/Camera";
+			final File directory = new File(DIRECTORY);
+			if (!directory.exists())
+			{
+				directory.mkdir();
+			}
+			final String path = DIRECTORY + '/' + filename + ".jpg";
+
+			OutputStream out = new FileOutputStream(path);
+			image.compress(Bitmap.CompressFormat.JPEG, 90, out);
+			image = null;
+			out.close();
+
+			setValue(new File(path));
+
+			File file = (File) getValue();
+			if (file != null)
+			{
+				// Insert into MediaStore.
+				ContentValues values = new ContentValues(5);
+
+				values.put(MediaStore.Images.Media.TITLE, "BabyFace " + title);
+				values.put(MediaStore.Images.Media.DISPLAY_NAME, "BabyFace " + title);
+				values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+				values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis());
+				values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+				values.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
+
+				getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+			}
+		}
+		catch (Exception e)
+		{
+			Log.e("PHOTO", e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+	{
+		switch (requestCode)
+		{
+			case CAMERA_PERMISSION_REQUEST:
+			{
+				// If request is cancelled, the result arrays are empty.
+				if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+				{
+					cameraView.startCamera();
+				}
+				else
+				{
+					Log.i("a", "Permission not granted");
+					// TODO
+				}
+			}
+
+			case STORAGE_PERMISSION_REQUEST:
+			{
+				if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+				{
+					writeToMedia();
+					getActivity().runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							nextPage();
+						}
+					});
+				}
+				else
+				{
+					writeToLocal();
+					getActivity().runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							nextPage();
+						}
+					});
+				}
+			}
+		}
+	}
+
+	@Override
+	public int getTint()
+	{
+		return Color.WHITE;
+	}
+
+	@Override
+	public boolean allowNext()
+	{
+		return getValue() != null;
+	}
+
+	private static Bitmap rotate(Bitmap bitmap, int degree)
 	{
 		int w = bitmap.getWidth();
 		int h = bitmap.getHeight();
@@ -221,29 +338,5 @@ public class CameraFragment extends PageFragment implements SurfaceHolder.Callba
 		mtx.postRotate(degree);
 
 		return Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true);
-	}
-
-	public void surfaceCreated(SurfaceHolder holder)
-	{
-	}
-
-	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
-	{
-//		Log.i("", "Surface Changed");
-//		try
-//		{
-//			getCamera().start(holder);
-//		}
-//		catch (Exception e)
-//		{
-//			Log.d("", "Error setting camera preview: " + e.getMessage());
-//		}
-	}
-
-	@Override
-	public void surfaceDestroyed(SurfaceHolder holder)
-	{
-
 	}
 }

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:id="@+id/content_frame"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+
+    <uk.ac.horizon.babyface.camera.CameraView
+        android:id="@+id/cameraView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ImageView
+        android:id="@+id/viewfinder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/face"
+        tools:ignore="ContentDescription"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/photoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large.Inverse"
+            android:textColor="#FFF"
+            android:padding="8dp"
+            tools:text="Face" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/photoButton"
+            android:src="@drawable/ic_photo_camera_black_48dp"
+            android:tint="#FFF"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:visibility="invisible"
+            android:contentDescription="@string/take_photo"/>
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_margin="16dp"
+            android:indeterminate="false"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+</FrameLayout>

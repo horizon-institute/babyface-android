@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:paddingBottom="30dp"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              android:paddingTop="150dp">
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+    <NumberPicker
+        android:id="@+id/numberPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants"/>
+
+    <RadioGroup
+        android:id="@+id/unitLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </RadioGroup>
+
+</LinearLayout>

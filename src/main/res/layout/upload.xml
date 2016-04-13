@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              android:paddingBottom="32dp"
+              android:paddingTop="150dp">
+
+    <ProgressBar
+			style="?android:attr/progressBarStyleHorizontal"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/progress"
+			android:visibility="invisible" />
+
+	<LinearLayout android:orientation="horizontal"
+	              android:layout_width="wrap_content"
+	              android:layout_height="wrap_content"
+	              android:gravity="center_vertical"
+	              android:background="?attr/selectableItemBackground"
+
+	              android:padding="16dp"
+	              android:id="@+id/uploadButton">
+
+		<ImageView android:layout_width="wrap_content"
+		           android:layout_height="wrap_content"
+		           android:src="@drawable/ic_file_upload_black_36dp"
+		           tools:ignore="ContentDescription" />
+
+		<TextView android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:text="@string/upload"
+		          android:layout_marginStart="8dp"
+		          android:layout_marginLeft="8dp"
+		          android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+	</LinearLayout>
+
+	<LinearLayout android:layout_width="wrap_content"
+	              android:layout_height="wrap_content"
+	              android:id="@+id/retryView"
+	              android:orientation="vertical"
+	              android:gravity="center_horizontal"
+	              android:visibility="gone">
+
+		<TextView android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:text="@string/error_upload"
+		          android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+		          android:textSize="18sp" />
+
+		<LinearLayout android:orientation="horizontal"
+		              android:layout_width="wrap_content"
+		              android:layout_height="wrap_content"
+		              android:id="@+id/retryButton"
+		              android:gravity="center_vertical"
+		              android:background="?attr/selectableItemBackground"
+		              android:padding="16dp">
+
+			<ImageView android:layout_width="wrap_content"
+			           android:layout_height="wrap_content"
+			           android:src="@drawable/ic_replay_black_36dp"
+			           tools:ignore="ContentDescription" />
+
+			<TextView android:layout_width="wrap_content"
+			          android:layout_height="wrap_content"
+			          android:text="@string/retry"
+			          android:layout_marginStart="8dp"
+			          android:layout_marginLeft="8dp"
+			          android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+		</LinearLayout>
+
+	</LinearLayout>
+
+	<LinearLayout android:orientation="horizontal"
+	              android:layout_width="wrap_content"
+	              android:layout_height="wrap_content"
+	              android:gravity="center_vertical"
+	              android:padding="16dp"
+	              android:id="@+id/progressButton"
+	              android:visibility="gone">
+
+		<ProgressBar
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/progressBar"
+				android:indeterminate="false"
+				style="@style/Widget.AppCompat.ProgressBar" />
+
+		<TextView android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:text="@string/uploading"
+		          android:layout_marginStart="8dp"
+		          android:layout_marginLeft="8dp"
+		          android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+	</LinearLayout>
+
+	<LinearLayout android:layout_width="wrap_content"
+	              android:layout_height="wrap_content"
+	              android:id="@+id/shareButton"
+	              android:orientation="vertical"
+	              android:gravity="center_horizontal"
+	              android:visibility="gone">
+
+		<TextView android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:text="@string/thanks"
+		          android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+		          android:textSize="18sp" />
+
+		<LinearLayout android:orientation="horizontal"
+		              android:layout_width="wrap_content"
+		              android:layout_height="wrap_content"
+		              android:gravity="center_vertical"
+		              android:background="?attr/selectableItemBackground"
+		              android:onClick="share"
+		              android:padding="16dp">
+
+			<ImageView android:layout_width="wrap_content"
+			           android:layout_height="wrap_content"
+			           android:src="@drawable/ic_share_black_36dp"
+			           tools:ignore="ContentDescription" />
+
+			<TextView android:layout_width="wrap_content"
+			          android:layout_height="wrap_content"
+			          android:text="@string/share"
+			          android:layout_marginStart="8dp"
+			          android:layout_marginLeft="8dp"
+			          android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+		</LinearLayout>
+
+	</LinearLayout>
+
+</LinearLayout>
