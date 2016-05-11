@@ -47,7 +47,8 @@
     <string name="expectedDate_question">What was your expected date of delivery?</string>
     <string name="expectedBasis_question">What was your expected date of delivery based on?</string>
     <string name="previous">Previous</string>
-    <string name="start"/>
+    <string name="start">Start</string>
+    <string name="unknown">Unknown</string>
     <string name="copyright">Copyright © 2015–2016 University of Nottingham</string>
     <string name="next">Next</string>
     <string-array name="expectedBasis_list">

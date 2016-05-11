@@ -182,8 +182,8 @@ public class PagerActivity extends AppCompatActivity
 			fragments.add(SimpleFragment.create(R.layout.policy));
 			fragments.add(ListFragment.create("gender"));
 			fragments.add(ListFragment.create("ethnicity"));
-			fragments.add(NumberFragment.create("weight", new NumberFragment.Range(16, 55, "kg", "kilograms"), new NumberFragment.Range(35, 120, "lb", "pounds")));
-			fragments.add(NumberFragment.create("headCircumference", new NumberFragment.Range(300, 420, "cm")));
+			fragments.add(NumberFragment.create("weight", new NumberFragment.Range(0, 0, "Unknown"), new NumberFragment.Range(4, 55, "kg"), new NumberFragment.Range(10, 120, "lb")));
+			fragments.add(NumberFragment.create("headCircumference", new NumberFragment.Range(0, 0, "Unknown"), new NumberFragment.Range(220, 420, "cm")));
 			fragments.add(DateFragment.create("birthDate", new Date().getTime() - 5184000000L, new Date().getTime()));
 			fragments.add(DateFragment.create("expectedDate", new Date().getTime() - 5184000000L - 1814400000L, new Date().getTime() + 1814400000L));
 			fragments.add(ListFragment.create("expectedBasis"));

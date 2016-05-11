@@ -16,16 +16,29 @@
         android:text="New Text"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
-    <NumberPicker
-        android:id="@+id/numberPicker"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"/>
+        android:orientation="horizontal">
 
-    <RadioGroup
-        android:id="@+id/unitLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </RadioGroup>
+        <NumberPicker
+            android:id="@+id/numberPicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"/>
+
+        <NumberPicker
+            android:id="@+id/numberPicker2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"/>
+
+        <RadioGroup
+            android:id="@+id/unitLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+        </RadioGroup>
+    </LinearLayout>
 
 </LinearLayout>

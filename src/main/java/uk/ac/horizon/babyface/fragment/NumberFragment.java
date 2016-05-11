@@ -27,29 +27,18 @@ public class NumberFragment extends PageFragment
 		private final int min;
 		private final int max;
 		private final String units;
-		private final String name;
-		private final boolean unknown;
 
 		public Range(int min, int max, String units)
 		{
 			this.min = min;
 			this.max = max;
 			this.units = units;
-			this.name = units;
-			this.unknown = true;
-		}
-
-		public Range(int min, int max, String units, String name)
-		{
-			this.min = min;
-			this.max = max;
-			this.units = units;
-			this.name = name;
-			this.unknown = true;
 		}
 	}
 
 	private NumberPicker numberPicker;
+	private NumberPicker numberPicker2;
+	private Range range;
 
 	public static NumberFragment create(String param, Range... ranges)
 	{
@@ -67,28 +56,56 @@ public class NumberFragment extends PageFragment
 
 	private void setRange(Range range)
 	{
+		this.range = range;
 		List<String> items = new ArrayList<>();
-		if(range.unknown)
+		int rangeMin = range.min / 10;
+		int rangeMax = range.max / 10;
+		for (int index = rangeMin; index <= rangeMax; index++)
 		{
-			items.add("Unknown");
-		}
-		for(int index = range.min; index <= range.max; index++)
-		{
-			items.add(""+ (index / 10.0) + range.units);
+			items.add("" + index);
 		}
 		String[] itemArray = items.toArray(new String[items.size()]);
 		numberPicker.setDisplayedValues(null);
-		if(range.unknown)
+		numberPicker.setMaxValue(rangeMax - rangeMin);
+		numberPicker.setDisplayedValues(itemArray);
+
+		if(rangeMin == rangeMax)
 		{
-			numberPicker.setMaxValue(range.max + 1 - range.min);
+			numberPicker.setAlpha(0.5f);
+			numberPicker2.setAlpha(0.5f);
+			numberPicker2.setDisplayedValues(null);
+			numberPicker2.setMaxValue(0);
+
+			items = new ArrayList<>();
+			items.add(".0");
 		}
 		else
 		{
-			numberPicker.setMaxValue(range.max - range.min);
+			numberPicker.setAlpha(1);
+			numberPicker2.setAlpha(1);
+			numberPicker2.setDisplayedValues(null);
+			numberPicker2.setMaxValue(9);
+
+			items = new ArrayList<>();
+			for (int index = 0; index <= 9; index++)
+			{
+				items.add("." + index);
+			}
 		}
-		numberPicker.setDisplayedValues(itemArray);
+
+		itemArray = items.toArray(new String[items.size()]);
+		numberPicker2.setDisplayedValues(itemArray);
+
 		Log.i("number", "Value = " + numberPicker.getValue() + " of " + range.min + "-" + range.max);
-		setValue(numberPicker.getDisplayedValues()[numberPicker.getValue()]);
+
+		if(rangeMin == rangeMax)
+		{
+			setValue("Unknown");
+		}
+		else
+		{
+			setValue(numberPicker.getDisplayedValues()[numberPicker.getValue()] + numberPicker2.getDisplayedValues()[numberPicker2.getValue()] + range.units);
+		}
 	}
 
 	@Override
@@ -100,41 +117,41 @@ public class NumberFragment extends PageFragment
 
 		String param = getArguments().getString("param");
 		numberPicker = (NumberPicker) rootView.findViewById(R.id.numberPicker);
+		numberPicker2 = (NumberPicker) rootView.findViewById(R.id.numberPicker2);
 		numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener()
 		{
 			@Override
 			public void onValueChange(NumberPicker picker, int oldVal, int newVal)
 			{
-				setValue(numberPicker.getDisplayedValues()[newVal]);
+				setValue(numberPicker.getDisplayedValues()[numberPicker.getValue()] + numberPicker2.getDisplayedValues()[numberPicker2.getValue()] + range.units);
 			}
 		});
 
 		final String rangeString = getArguments().getString("ranges");
-		if(rangeString != null)
+		if (rangeString != null)
 		{
 			final Range[] ranges = gson.fromJson(rangeString, Range[].class);
 
-			if(ranges.length > 0)
+			if (ranges.length > 0)
 			{
+				final RadioGroup unitGroup = (RadioGroup) rootView.findViewById(R.id.unitLayout);
 				setRange(ranges[0]);
-				if(ranges.length > 1)
+				@IdRes
+				int index = 1;
+				boolean selected = false;
+
+				for (final Range range : ranges)
 				{
-					final RadioGroup unitGroup = (RadioGroup) rootView.findViewById(R.id.unitLayout);
-					boolean selected = false;
-					@IdRes
-					int index = 1;
-					for(final Range range: ranges)
+					final RadioButton rangeButton = new RadioButton(getContext());
+					rangeButton.setText(range.units);
+					rangeButton.setId(index);
+					index++;
+					if(!selected)
 					{
-						final RadioButton rangeButton = new RadioButton(getContext());
-						rangeButton.setText(range.name);
-						rangeButton.setId(index);
-						index++;
-						if(!selected)
-						{
-							selected = true;
-							rangeButton.setChecked(true);
-						}
-						rangeButton.setOnClickListener(new View.OnClickListener()
+						rangeButton.setChecked(true);
+						selected = true;
+					}
+					rangeButton.setOnClickListener(new View.OnClickListener()
 						{
 							@Override
 							public void onClick(View v)
@@ -142,15 +159,14 @@ public class NumberFragment extends PageFragment
 								setRange(range);
 							}
 						});
-						unitGroup.addView(rangeButton);
-					}
+					unitGroup.addView(rangeButton);
 				}
 			}
 		}
 
 		int label = getResources().getIdentifier(param + "_question", "string", getActivity().getPackageName());
 
-		if(label != 0)
+		if (label != 0)
 		{
 			TextView textView = (TextView) rootView.findViewById(R.id.label);
 			textView.setText(label);
