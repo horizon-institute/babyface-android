@@ -19,26 +19,21 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal">
 
-        <NumberPicker
-            android:id="@+id/numberPicker"
+        <LinearLayout
+            android:id="@+id/pickers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:descendantFocusability="blocksDescendants"/>
-
-        <NumberPicker
-            android:id="@+id/numberPicker2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:descendantFocusability="blocksDescendants"/>
+            android:orientation="horizontal">
+        </LinearLayout>
 
         <RadioGroup
             android:id="@+id/unitLayout"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical">
         </RadioGroup>
     </LinearLayout>
-
 </LinearLayout>

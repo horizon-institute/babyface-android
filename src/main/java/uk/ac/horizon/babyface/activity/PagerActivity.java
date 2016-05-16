@@ -182,8 +182,19 @@ public class PagerActivity extends AppCompatActivity
 			fragments.add(SimpleFragment.create(R.layout.policy));
 			fragments.add(ListFragment.create("gender"));
 			fragments.add(ListFragment.create("ethnicity"));
-			fragments.add(NumberFragment.create("weight", new NumberFragment.Range(0, 0, "Unknown"), new NumberFragment.Range(4, 55, "kg"), new NumberFragment.Range(10, 120, "lb")));
-			fragments.add(NumberFragment.create("headCircumference", new NumberFragment.Range(0, 0, "Unknown"), new NumberFragment.Range(220, 420, "cm")));
+			fragments.add(NumberFragment.create("weight",
+					new NumberFragment.Option("Unknown"),
+					new NumberFragment.Option("kg",
+							new NumberFragment.Value(1, 5, "."),
+							new NumberFragment.Value(0, 9, "kg")),
+					new NumberFragment.Option("lb",
+							new NumberFragment.Value(1, 12, "lb "),
+							new NumberFragment.Value(0, 15, "oz"))));
+			fragments.add(NumberFragment.create("headCircumference",
+					new NumberFragment.Option("Unknown"),
+					new NumberFragment.Option("cm",
+							new NumberFragment.Value(22, 42, "."),
+							new NumberFragment.Value(0, 9, "cm"))));
 			fragments.add(DateFragment.create("birthDate", new Date().getTime() - 5184000000L, new Date().getTime()));
 			fragments.add(DateFragment.create("expectedDate", new Date().getTime() - 5184000000L - 1814400000L, new Date().getTime() + 1814400000L));
 			fragments.add(ListFragment.create("expectedBasis"));

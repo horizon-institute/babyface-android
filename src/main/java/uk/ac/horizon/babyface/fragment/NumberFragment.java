@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -14,98 +15,64 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import uk.ac.horizon.babyface.R;
 
 public class NumberFragment extends PageFragment
 {
-	private static final Gson gson = new Gson();
-
-	public static class Range
+	public static class Value
 	{
-		private final int min;
-		private final int max;
-		private final String units;
+		private final int range;
+		private final String[] items;
 
-		public Range(int min, int max, String units)
+		public Value(int min, int max, String postfix)
 		{
-			this.min = min;
-			this.max = max;
-			this.units = units;
+			this(min, max, "", postfix);
+		}
+
+		public Value(int min, int max, String prefix, String postfix)
+		{
+			this.range = max - min;
+
+			List<String> items = new ArrayList<>();
+			for (int index = min; index <= max; index++)
+			{
+				items.add(prefix + index + postfix);
+			}
+			this.items = items.toArray(new String[items.size()]);
 		}
 	}
 
-	private NumberPicker numberPicker;
-	private NumberPicker numberPicker2;
-	private Range range;
-
-	public static NumberFragment create(String param, Range... ranges)
+	public static class Option
 	{
-		final Bundle bundle = new Bundle();
-		bundle.putString("param", param);
-		bundle.putString("ranges", gson.toJson(ranges));
-		final NumberFragment fragment = new NumberFragment();
-		fragment.setArguments(bundle);
-		return fragment;
+		private final String name;
+		private final List<Value> values = new ArrayList<>();
+
+		public Option(String name, Value... values)
+		{
+			this.name = name;
+			Collections.addAll(this.values, values);
+		}
 	}
+
+	private static final Gson gson = new Gson();
+	private LinearLayout pickers;
+	private Option option;
 
 	public NumberFragment()
 	{
 	}
 
-	private void setRange(Range range)
+	public static NumberFragment create(String param, Option... options)
 	{
-		this.range = range;
-		List<String> items = new ArrayList<>();
-		int rangeMin = range.min / 10;
-		int rangeMax = range.max / 10;
-		for (int index = rangeMin; index <= rangeMax; index++)
-		{
-			items.add("" + index);
-		}
-		String[] itemArray = items.toArray(new String[items.size()]);
-		numberPicker.setDisplayedValues(null);
-		numberPicker.setMaxValue(rangeMax - rangeMin);
-		numberPicker.setDisplayedValues(itemArray);
-
-		if(rangeMin == rangeMax)
-		{
-			numberPicker.setAlpha(0.5f);
-			numberPicker2.setAlpha(0.5f);
-			numberPicker2.setDisplayedValues(null);
-			numberPicker2.setMaxValue(0);
-
-			items = new ArrayList<>();
-			items.add(".0");
-		}
-		else
-		{
-			numberPicker.setAlpha(1);
-			numberPicker2.setAlpha(1);
-			numberPicker2.setDisplayedValues(null);
-			numberPicker2.setMaxValue(9);
-
-			items = new ArrayList<>();
-			for (int index = 0; index <= 9; index++)
-			{
-				items.add("." + index);
-			}
-		}
-
-		itemArray = items.toArray(new String[items.size()]);
-		numberPicker2.setDisplayedValues(itemArray);
-
-		Log.i("number", "Value = " + numberPicker.getValue() + " of " + range.min + "-" + range.max);
-
-		if(rangeMin == rangeMax)
-		{
-			setValue("Unknown");
-		}
-		else
-		{
-			setValue(numberPicker.getDisplayedValues()[numberPicker.getValue()] + numberPicker2.getDisplayedValues()[numberPicker2.getValue()] + range.units);
-		}
+		final Bundle bundle = new Bundle();
+		bundle.putString("param", param);
+		bundle.putString("options", gson.toJson(options));
+		final NumberFragment fragment = new NumberFragment();
+		fragment.setArguments(bundle);
+		return fragment;
 	}
 
 	@Override
@@ -114,51 +81,43 @@ public class NumberFragment extends PageFragment
 	{
 		View rootView = inflater.inflate(R.layout.number, container, false);
 
-
 		String param = getArguments().getString("param");
-		numberPicker = (NumberPicker) rootView.findViewById(R.id.numberPicker);
-		numberPicker2 = (NumberPicker) rootView.findViewById(R.id.numberPicker2);
-		numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener()
-		{
-			@Override
-			public void onValueChange(NumberPicker picker, int oldVal, int newVal)
-			{
-				setValue(numberPicker.getDisplayedValues()[numberPicker.getValue()] + numberPicker2.getDisplayedValues()[numberPicker2.getValue()] + range.units);
-			}
-		});
+		pickers = (LinearLayout) rootView.findViewById(R.id.pickers);
 
-		final String rangeString = getArguments().getString("ranges");
+		final String rangeString = getArguments().getString("options");
+		Log.i("range", rangeString);
 		if (rangeString != null)
 		{
-			final Range[] ranges = gson.fromJson(rangeString, Range[].class);
+			final Option[] options = gson.fromJson(rangeString, Option[].class);
 
-			if (ranges.length > 0)
+			if (options.length > 0)
 			{
 				final RadioGroup unitGroup = (RadioGroup) rootView.findViewById(R.id.unitLayout);
-				setRange(ranges[0]);
+				setOption(options[0]);
 				@IdRes
 				int index = 1;
 				boolean selected = false;
 
-				for (final Range range : ranges)
+				for (final Option option : options)
 				{
 					final RadioButton rangeButton = new RadioButton(getContext());
-					rangeButton.setText(range.units);
+					rangeButton.setText(option.name);
 					rangeButton.setId(index);
 					index++;
-					if(!selected)
+					if (!selected)
 					{
 						rangeButton.setChecked(true);
 						selected = true;
 					}
 					rangeButton.setOnClickListener(new View.OnClickListener()
+					{
+						@Override
+						public void onClick(View v)
 						{
-							@Override
-							public void onClick(View v)
-							{
-								setRange(range);
-							}
-						});
+							setOption(option);
+						}
+					});
+					Log.i("range", "Add button " + rangeButton);
 					unitGroup.addView(rangeButton);
 				}
 			}
@@ -172,6 +131,8 @@ public class NumberFragment extends PageFragment
 			textView.setText(label);
 		}
 
+		rootView.forceLayout();
+
 		return rootView;
 	}
 
@@ -179,5 +140,60 @@ public class NumberFragment extends PageFragment
 	public void setUserVisibleHint(boolean isVisibleToUser)
 	{
 
+	}
+
+	private String createValue()
+	{
+		if (option == null)
+		{
+			return null;
+		}
+
+		if (option.values.isEmpty())
+		{
+			return option.name;
+		}
+
+		StringBuilder builder = new StringBuilder();
+		for (int index = 0; index < pickers.getChildCount(); index++)
+		{
+			View view = pickers.getChildAt(index);
+			if (view instanceof NumberPicker)
+			{
+				NumberPicker picker = (NumberPicker) view;
+				builder.append(picker.getDisplayedValues()[picker.getValue()]);
+			}
+		}
+		return builder.toString();
+	}
+
+	private void setOption(Option option)
+	{
+		if (this.option != option)
+		{
+			this.option = option;
+			pickers.removeAllViews();
+			for (Value value : option.values)
+			{
+				NumberPicker picker = new NumberPicker(getContext());
+				picker.setMaxValue(value.range);
+				picker.setDisplayedValues(value.items);
+				picker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+				picker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener()
+				{
+					@Override
+					public void onValueChange(NumberPicker picker, int oldVal, int newVal)
+					{
+						setValue(createValue());
+					}
+				});
+
+				Log.i("range", "Add view " + picker);
+				pickers.addView(picker);
+			}
+
+			pickers.forceLayout();
+			setValue(createValue());
+		}
 	}
 }
