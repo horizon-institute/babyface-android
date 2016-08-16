@@ -1,66 +1,67 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-	repositories {
-		jcenter()
-	}
-	dependencies {
-		classpath 'com.android.tools.build:gradle:2.1.0'
-	}
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.0'
+    }
 }
 
 apply plugin: 'idea'
 apply plugin: 'com.android.application'
 
 allprojects {
-	repositories {
-		jcenter()
-	}
+    repositories {
+        jcenter()
+    }
 }
 
 
 dependencies {
-	compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:customtabs:23.4.0'
-	compile 'com.squareup.okhttp3:okhttp:3.1.2'
+    compile 'com.squareup.okhttp3:okhttp:3.1.2'
     compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
 }
 
 android {
-	compileSdkVersion 23
-	buildToolsVersion "23.0.3"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
 
-	defaultConfig {
-		minSdkVersion 15
-		targetSdkVersion 23
-		versionCode 8
-		versionName '2.0.2'
-	}
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 8
+        versionName '2.0.2'
+    }
 
-	signingConfigs {
-		release {
-			storeFile file(project.property('keystore'))
-			storePassword project.property('keystore.password')
-			keyAlias project.property('key.alias')
-			keyPassword project.property('key.password')
-		}
-	}
+    signingConfigs {
+        release {
+            storeFile file(project.property('keystore'))
+            storePassword project.property('keystore.password')
+            keyAlias project.property('key.alias')
+            keyPassword project.property('key.password')
+        }
+    }
 
-	buildTypes {
-		release {
-			signingConfig signingConfigs.release
-		}
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
 
-		debug {
-			signingConfig signingConfigs.release
-		}
-	}
+        debug {
+            signingConfig signingConfigs.release
+        }
+    }
 
-	lintOptions {
-		abortOnError false
-	}
+    lintOptions {
+        abortOnError false
+    }
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '2.12'
+    gradleVersion = '2.12'
 }
