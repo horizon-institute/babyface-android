@@ -1,18 +1,79 @@
 <!DOCTYPE html>
 <html>
+<head>
+<!-- This form is for testing the server script -->
+<style type="text/css">
+
+* { box-sizing: border-box; font-family: helvetica, sans-serif; }
+html, body { height: 100%; }
+
+</style>
+</head>
 <body>
-
+<h1>NeoGest Debug Uploader</h1>
 <form action="upload.php" method="post" enctype="multipart/form-data">
-    <input type="file" name="face" id="face">
-    <input type="file" name="foot" id="foot">
-    <input type="file" name="ear" id="ear">
-    <input type="hidden" name="weight" value="50">
-    <input type="hidden" name="age" value="0">
-    <input type="hidden" name="due" value="0">
-    <input type="hidden" name="ethnicity" value="White">
-    <input type="hidden" name="gender" value="Girl">
-    <input type="submit" value="Upload Image" name="submit">
+	<h2>Face photos</h2>
+	<input type="file" name="face" id="face1">
+	<input type="file" name="face2" id="face2">
+	<input type="file" name="face3" id="face3">
+	<h2>Foot photos</h2>
+	<input type="file" name="foot" id="foot1">
+	<input type="file" name="foot2" id="foot2">
+	<input type="file" name="foot3" id="foot3">
+	<br>
+	<input type="radio" name="footLeftRight" value="Left" id="footLeft"><label for="footLeft">Left</label>
+	<input type="radio" name="footLeftRight" value="Right" id="footRight"><label for="footRight">Right</label>
+	<h2>Ear photos</h2>
+	<input type="file" name="ear" id="ear1">
+	<input type="file" name="ear2" id="ear2">
+	<input type="file" name="ear3" id="ear3">
+	<br>
+	<input type="radio" name="earLeftRight" value="Left" id="earLeft"><label for="earLeft">Left</label>
+	<input type="radio" name="earLeftRight" value="Right" id="earRight"><label for="earRight">Right</label>
+	<h2>Details</h2>
+	placeOfBirth <input type="text" name="placeOfBirth" value="Site 1"> Site 1...10<br>
+	userId <input type="text" name="userId" value="ABCD"> 4 chars<br>
+	studyId <input type="text" name="studyId" value="123456789012345"> 15 chars<br>
+	gender
+	<input type="radio" name="gender" value="Male" id="gmale"><label for="gmale">Male</label>
+	<input type="radio" name="gender" value="Female" id="gfemale"><label for="gfemale">Female</label>
+	<br>
+	ethnicity
+	<input type="radio" name="ethnicity" value="Indian" id="e1"><label for="e1">Indian</label>
+	<input type="radio" name="ethnicity" value="White" id="e2"><label for="e2">White</label>
+	<input type="radio" name="ethnicity" value="Black" id="e3"><label for="e3">Black</label>
+	<input type="radio" name="ethnicity" value="Other Asian" id="e4"><label for="e4">Other Asian</label>
+	<input type="radio" name="ethnicity" value="Other" id="e5"><label for="e5">Other</label>
+	<br>
+	weight (g) <input type="text" name="weight" value="500"> e.g. 500<br>
+	headCircumference (cm) <input type="text" name="headCircumference" value="30"> e.g. 30<br>
+	babiesAtBirth
+	<input type="radio" name="babiesAtBirth" value="Singleton" id="b1"><label for="b1">Singleton</label>
+	<input type="radio" name="babiesAtBirth" value="Twin" id="b2"><label for="b2">Twin</label>
+	<input type="radio" name="babiesAtBirth" value="Triplet" id="b3"><label for="b3">Triplet</label>
+	<input type="radio" name="babiesAtBirth" value="Quadruplet" id="b4"><label for="b4">Quadruplet</label>
+	<input type="radio" name="babiesAtBirth" value="Other" id="b5"><label for="b5">Other</label>
+	<br>
+	modeOfDelivery
+	<input type="radio" name="modeOfDelivery" value="Vaginal" id="d1"><label for="d1">Vaginal</label>
+	<input type="radio" name="modeOfDelivery" value="Instrumental" id="d2"><label for="d2">Instrumental</label>
+	<input type="radio" name="modeOfDelivery" value="Caesarean Section" id="d3"><label for="d3">Caesarean Section</label>
+	<br>
+	birthDate <input type="text" name="birthDate" value="2018-03-22"> YYYY-MM-DD<br>
+	expectedDate <input type="text" name="expectedDate" value="2018-03-22"> YYYY-MM-DD<br>
+	expectedBasis
+	<input type="radio" name="expectedBasis" value="First trimester ultrasound" id="eb1"><label for="eb1">First trimester ultrasound</label>
+	<input type="radio" name="expectedBasis" value="Last menstrual period" id="eb2"><label for="eb2">Last menstrual period</label>
+	<input type="radio" name="expectedBasis" value="Estimate" id="eb3"><label for="eb3">Estimate</label>
+	<input type="radio" name="expectedBasis" value="Other" id="eb3"><label for="eb3">Other</label>
+	<br>
+	imageDate <input type="text" name="imageDate" value="2018-03-22"> YYYY-MM-DD<br>
+	additionalInfo <input type="text" name="additionalInfo" value=""><br>
+	<input type="hidden" name="clientName" value="TestHtmlPage">
+	
+	<h2>Submit</h2>
+	<input type="submit" value="Upload Image" name="submit">
 </form>
-
+<br><br><br><br><br><br><br><br><br><br><br>
 </body>
 </html>

@@ -10,6 +10,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import uk.ac.horizon.babyface.R;
 
 public class ListFragment extends PageFragment
@@ -65,18 +67,45 @@ public class ListFragment extends PageFragment
 				index++;
 				itemView.setText(item);
 
+
 				listView.addView(root);
 			}
 		}
+
 
 		rootView.forceLayout();
 
 		return rootView;
 	}
 
+
 	@Override
 	public boolean allowNext()
 	{
-		return getValue() != null;
+		String param = getArguments().getString("param");
+		int validOptionsListID = getResources().getIdentifier(param + "_list_valid_options", "array", getActivity().getPackageName());
+		Object value = getValue();
+		if (getValue() == null)
+		{
+			return false;
+		}
+		else
+		{
+			if (validOptionsListID == 0)
+			{
+				return true;
+			}
+			else
+			{
+				String[] items = getResources().getStringArray(validOptionsListID);
+				for (String s : items)
+				{
+					if (s.equals((String) value)) return true;
+				}
+				return false;
+			}
+		}
 	}
+
+
 }

@@ -134,4 +134,114 @@
 
 	</LinearLayout>
 
+	<LinearLayout android:layout_width="wrap_content"
+				  android:layout_height="wrap_content"
+				  android:id="@+id/saveOfflineArea"
+				  android:orientation="vertical"
+				  android:gravity="center_horizontal"
+				  android:visibility="visible">
+
+		<TextView android:layout_width="wrap_content"
+				  android:layout_height="wrap_content"
+				  android:text="@string/OR"
+				  android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+				  android:textSize="18sp" />
+
+		<LinearLayout android:orientation="horizontal"
+					  android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:gravity="center_vertical"
+					  android:background="?attr/selectableItemBackground"
+
+					  android:padding="16dp"
+					  android:id="@+id/saveButton">
+
+			<ImageView android:layout_width="wrap_content"
+					   android:layout_height="wrap_content"
+					   android:src="@drawable/ic_chevron_right_24dp"
+					   tools:ignore="ContentDescription" />
+
+			<TextView android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:text="@string/saveToDevice"
+					  android:layout_marginStart="8dp"
+					  android:layout_marginLeft="8dp"
+					  android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+		</LinearLayout>
+
+	</LinearLayout>
+
+
+	<LinearLayout android:layout_width="wrap_content"
+				  android:layout_height="wrap_content"
+				  android:id="@+id/doneUploadedButton"
+				  android:orientation="vertical"
+				  android:gravity="center_horizontal"
+				  android:visibility="gone">
+
+		<TextView android:layout_width="wrap_content"
+				  android:layout_height="wrap_content"
+				  android:text="@string/thanksUploaded"
+				  android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+				  android:textSize="18sp" />
+
+		<LinearLayout android:orientation="horizontal"
+					  android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:gravity="center_vertical"
+					  android:background="?attr/selectableItemBackground"
+					  android:onClick="done"
+					  android:padding="16dp">
+
+			<ImageView android:layout_width="wrap_content"
+					   android:layout_height="wrap_content"
+					   android:src="@drawable/ic_chevron_right_24dp"
+					   tools:ignore="ContentDescription" />
+
+			<TextView android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:text="@string/done"
+					  android:layout_marginStart="8dp"
+					  android:layout_marginLeft="8dp"
+					  android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+		</LinearLayout>
+
+	</LinearLayout>
+
+	<LinearLayout android:layout_width="wrap_content"
+				  android:layout_height="wrap_content"
+				  android:id="@+id/doneSavedButton"
+				  android:orientation="vertical"
+				  android:gravity="center_horizontal"
+				  android:visibility="gone">
+
+		<TextView android:layout_width="wrap_content"
+				  android:layout_height="wrap_content"
+				  android:text="@string/thanksSaved"
+				  android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+				  android:textSize="18sp" />
+
+		<LinearLayout android:orientation="horizontal"
+					  android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:gravity="center_vertical"
+					  android:background="?attr/selectableItemBackground"
+					  android:onClick="done"
+					  android:padding="16dp">
+
+			<ImageView android:layout_width="wrap_content"
+					   android:layout_height="wrap_content"
+					   android:src="@drawable/ic_chevron_right_24dp"
+					   tools:ignore="ContentDescription" />
+
+			<TextView android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:text="@string/done"
+					  android:layout_marginStart="8dp"
+					  android:layout_marginLeft="8dp"
+					  android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+		</LinearLayout>
+
+	</LinearLayout>
+
 </LinearLayout>

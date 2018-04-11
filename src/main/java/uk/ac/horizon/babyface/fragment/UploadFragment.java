@@ -1,7 +1,9 @@
 package uk.ac.horizon.babyface.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,9 +12,23 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -25,11 +41,12 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import uk.ac.horizon.babyface.R;
+import uk.ac.horizon.babyface.SavedFiles;
+import uk.ac.horizon.babyface.Uploader;
 import uk.ac.horizon.babyface.activity.PagerActivity;
 
 public class UploadFragment extends PageFragment
 {
-	private static final OkHttpClient client = new OkHttpClient();
 	private boolean uploading = false;
 
 	@Override
@@ -61,6 +78,15 @@ public class UploadFragment extends PageFragment
 			}
 		});
 
+		root.findViewById(R.id.saveButton).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				saveEntry();
+			}
+		});
+
 		return root;
 	}
 
@@ -73,44 +99,36 @@ public class UploadFragment extends PageFragment
 		final View progressButton = root.findViewById(R.id.progressButton);
 		final View uploadButton = root.findViewById(R.id.uploadButton);
 		final View retryView = root.findViewById(R.id.retryView);
+		final View saveOfflineView = root.findViewById(R.id.saveOfflineArea);
 
 		progressBar.setVisibility(View.VISIBLE);
 		progressButton.setVisibility(View.VISIBLE);
 		uploadButton.setVisibility(View.GONE);
 		retryView.setVisibility(View.GONE);
+		saveOfflineView.setVisibility(View.GONE);
 
-		final MultipartBody.Builder bodyBuilder = new MultipartBody.Builder();
-		bodyBuilder.setType(MultipartBody.FORM);
-
-		final Map<String, Object> data = getData();
-		final MediaType imageType = MediaType.parse("image/jpeg");
-		for(String param: data.keySet())
-		{
-			Object value = data.get(param);
-			if(value instanceof String)
-			{
-				bodyBuilder.addFormDataPart(param, (String)value);
-			}
-			else if(value instanceof File)
-			{
-				bodyBuilder.addFormDataPart(param, param, RequestBody.create(imageType, (File) value));
-			}
-		}
-		bodyBuilder.addFormDataPart("country", getUserCountry(getContext()));
-
-		Request request = new Request.Builder()
-				.url("http://www.cs.nott.ac.uk/babyface/upload.php")
-				.post(bodyBuilder.build())
-				.build();
-
-		Log.i("request", ""+request);
-
-		client.newCall(request).enqueue(new Callback()
+		Uploader.uploadData(getActivity(), getData(), new Uploader.UploadListener()
 		{
 			@Override
-			public void onFailure(final Call call, final IOException e)
+			public void onUploadSuccess()
 			{
-				Log.w("response", e.getMessage(), e);
+
+				getActivity().runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						progressBar.setVisibility(View.INVISIBLE);
+						progressButton.setVisibility(View.GONE);
+						root.findViewById(R.id.doneUploadedButton).setVisibility(View.VISIBLE);
+						((PagerActivity) getActivity()).dataIsUnsaved = false;
+					}
+				});
+			}
+
+			@Override
+			public void onUploadFailure()
+			{
 				getActivity().runOnUiThread(new Runnable()
 				{
 					@Override
@@ -119,30 +137,7 @@ public class UploadFragment extends PageFragment
 						progressBar.setVisibility(View.INVISIBLE);
 						progressButton.setVisibility(View.GONE);
 						retryView.setVisibility(View.VISIBLE);
-					}
-				});
-			}
-
-			@Override
-			public void onResponse(final Call call, final Response response) throws IOException
-			{
-				getActivity().runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						progressBar.setVisibility(View.INVISIBLE);
-						progressButton.setVisibility(View.GONE);
-						if(response.code() != 200)
-						{
-							Log.w("response", response.message());
-							Log.w("response", response.body().toString());
-							onFailure(call, null);
-						}
-						else
-						{
-							root.findViewById(R.id.shareButton).setVisibility(View.VISIBLE);
-						}
+						saveOfflineView.setVisibility(View.VISIBLE);
 					}
 				});
 			}
@@ -155,36 +150,96 @@ public class UploadFragment extends PageFragment
 		return !uploading;
 	}
 
-	private static String getUserCountry(Context context)
+	protected void saveEntry()
 	{
-		try
+
+		uploading = true;
+		update();
+		final View root = getView();
+		final ProgressBar progressBar = (ProgressBar) root.findViewById(R.id.progress);
+		final View progressButton = root.findViewById(R.id.progressButton);
+		final View uploadButton = root.findViewById(R.id.uploadButton);
+		final View retryView = root.findViewById(R.id.retryView);
+		final View saveOfflineView = root.findViewById(R.id.saveOfflineArea);
+
+		progressBar.setVisibility(View.GONE);
+		progressButton.setVisibility(View.GONE);
+		uploadButton.setVisibility(View.GONE);
+		retryView.setVisibility(View.GONE);
+		saveOfflineView.setVisibility(View.GONE);
+
+		SavedFiles.saveData(getActivity(), getData(), new SavedFiles.FileSaveListener()
 		{
-			final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-			final String simCountry = tm.getSimCountryIso();
-			if (simCountry != null && simCountry.length() == 2)
+			@Override
+			public void onSaveSuccess()
 			{
-				// SIM country code is available
-				return simCountry.toLowerCase(Locale.US);
-			}
-			else if (tm.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA)
-			{
-				// device is not 3G (would be unreliable)
-				String networkCountry = tm.getNetworkCountryIso();
-				if (networkCountry != null && networkCountry.length() == 2)
+				((PagerActivity)getActivity()).dataIsUnsaved = false;
+				update();
+				final View root = getView();
+				final ProgressBar progressBar = (ProgressBar) root.findViewById(R.id.progress);
+				final View progressButton = root.findViewById(R.id.progressButton);
+				final View uploadButton = root.findViewById(R.id.uploadButton);
+				final View retryView = root.findViewById(R.id.retryView);
+				final View saveOfflineView = root.findViewById(R.id.saveOfflineArea);
+				final View doneSavedButtonView = root.findViewById(R.id.doneSavedButton);
+
+				getActivity().runOnUiThread(new Runnable()
 				{
-					// network country code is available
-					return networkCountry.toLowerCase(Locale.US);
-				}
+					@Override
+					public void run()
+					{
+						progressBar.setVisibility(View.GONE);
+						progressButton.setVisibility(View.GONE);
+						uploadButton.setVisibility(View.GONE);
+						retryView.setVisibility(View.GONE);
+						saveOfflineView.setVisibility(View.GONE);
+						doneSavedButtonView.setVisibility(View.VISIBLE);
+					}
+				});
 			}
-			else
+
+			@Override
+			public void onSaveFailure(final String why)
 			{
-				return context.getResources().getConfiguration().locale.getCountry().toLowerCase(Locale.US);
+				uploading = false;
+				update();
+				final View root = getView();
+				final ProgressBar progressBar = (ProgressBar) root.findViewById(R.id.progress);
+				final View progressButton = root.findViewById(R.id.progressButton);
+				final View uploadButton = root.findViewById(R.id.uploadButton);
+				final View retryView = root.findViewById(R.id.retryView);
+				final View saveOfflineView = root.findViewById(R.id.saveOfflineArea);
+
+				getActivity().runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						progressBar.setVisibility(View.VISIBLE);
+						progressButton.setVisibility(View.VISIBLE);
+						uploadButton.setVisibility(View.VISIBLE);
+						retryView.setVisibility(View.GONE);
+						saveOfflineView.setVisibility(View.VISIBLE);
+
+
+						DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
+						{
+							@Override
+							public void onClick(DialogInterface dialog, int which)
+							{
+							}
+						};
+
+						AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+						builder.setTitle("ERROR: DATA NOT SAVED")
+								.setMessage("There was a problem saving this record: " + why)
+								.setPositiveButton("OK", dialogClickListener)
+								.show();
+					}
+				});
 			}
-		}
-		catch (Exception e)
-		{
-			Log.i("", e.getMessage(), e);
-		}
-		return null;
+		});
 	}
+
+
 }

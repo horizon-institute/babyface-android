@@ -10,6 +10,11 @@ import uk.ac.horizon.babyface.activity.PagerActivity;
 
 public abstract class PageFragment extends Fragment
 {
+	public boolean showBanner()
+	{
+		return true;
+	}
+
 	void nextPage()
 	{
 		if(getActivity() instanceof PagerActivity)

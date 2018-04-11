@@ -24,6 +24,9 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.UUID;
 
 import uk.ac.horizon.babyface.R;
@@ -39,6 +42,12 @@ public class CameraFragment extends PageFragment
 	private String title;
 	private Bitmap image;
 	private View progress;
+
+	@Override
+	public boolean showBanner()
+	{
+		return false;
+	}
 
 	public CameraFragment()
 	{
@@ -121,7 +130,7 @@ public class CameraFragment extends PageFragment
 			viewfinder.setImageResource(imageID);
 		}
 
-		title = getString(param + "_title", capitalize(param));
+		title = getString(param + "_title", param);
 		TextView hintText = (TextView) rootView.findViewById(R.id.photoText);
 		hintText.setText(title);
 
@@ -153,6 +162,12 @@ public class CameraFragment extends PageFragment
 									//angleToRotate = angleToRotate + 180;
 									Bitmap orignalImage = BitmapFactory.decodeByteArray(data, 0, data.length);
 									image = rotate(orignalImage, angleToRotate);
+
+
+									DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+									String date = df.format(Calendar.getInstance().getTime());
+									getData().put("photo_"+param+"_time",date);
+									Log.i(this.getClass().getSimpleName(), "photo_"+param+"_time="+date);
 
 									if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
 									{
@@ -239,6 +254,7 @@ public class CameraFragment extends PageFragment
 			}
 			final String path = DIRECTORY + '/' + filename + ".jpg";
 
+			Log.i("imagePath", path);
 			OutputStream out = new FileOutputStream(path);
 			image.compress(Bitmap.CompressFormat.JPEG, 90, out);
 			image = null;

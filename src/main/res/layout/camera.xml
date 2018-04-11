@@ -18,41 +18,43 @@
         android:src="@drawable/face"
         tools:ignore="ContentDescription"/>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:gravity="center_horizontal">
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|center_horizontal"
+		android:gravity="center_horizontal"
+		android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/photoText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large.Inverse"
-            android:textColor="#FFF"
-            android:padding="8dp"
-            tools:text="Face" />
+		<TextView
+			android:id="@+id/photoText"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="8dp"
+			android:text="Face"
+			android:textAlignment="gravity"
+			android:gravity="center"
+			android:textAppearance="@style/Base.TextAppearance.AppCompat.Large.Inverse"
+			android:textColor="#FFF"/>
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/photoButton"
-            android:src="@drawable/ic_photo_camera_black_48dp"
-            android:tint="#FFF"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:visibility="invisible"
-            android:contentDescription="@string/take_photo"/>
+		<ImageButton
+			android:id="@+id/photoButton"
+			style="@style/Widget.AppCompat.Button.Borderless"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:contentDescription="@string/take_photo"
+			android:src="@drawable/ic_photo_camera_black_48dp"
+			android:tint="#FFF"
+			android:visibility="invisible"/>
 
-        <ProgressBar
-            android:id="@+id/progress"
-            style="@style/Widget.AppCompat.ProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_margin="16dp"
-            android:indeterminate="false"
-            android:visibility="gone"/>
+		<ProgressBar
+			android:id="@+id/progress"
+			style="@style/Widget.AppCompat.ProgressBar"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="bottom|center"
+			android:layout_margin="16dp"
+			android:indeterminate="false"
+			android:visibility="gone"/>
 
-    </LinearLayout>
+	</LinearLayout>
 </FrameLayout>

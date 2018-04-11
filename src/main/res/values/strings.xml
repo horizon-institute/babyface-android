@@ -1,60 +1,161 @@
 <resources>
-	<string name="app_name">BabyFace</string>
+	<string name="app_name">NeoGest</string>
 
 	<string name="disclaim1">We care about you and your baby\'s personal data.</string>
 	<string name="disclaim2">The images you provide will only be used for this project, will be stored anonymously and will be destroyed afterwards.</string>
 	<string name="disclaim3">For more information about our privacy policy and terms of use, please visit out website.</string>
-	<string name="babyface_website">BabyFace Website</string>
+	<string name="babyface_website">NeoGest Website</string>
 	<string name="terms_click">Click next to accept the terms and conditions</string>
 	<string name="nott_uni">The University of Nottingham</string>
 	<string name="about">By donating the images of your baby the University of Nottingham will create a mobile phone app that will allow doctors to estimate if a baby was born prematurely in places without ultrasound scans.</string>
 	<string name="take_photo">Take Photo</string>
-	<string name="subtitle">BabyFace collects images of your baby to help those in need.</string>
+	<string name="subtitle">Data Collection</string>
 	<string name="noCameraTitle">Camera Error</string>
 	<string name="noCameraMessage">The was a problem communicating with the camera</string>
 	<string name="noCameraButton">Exit</string>
 	<string name="upload">Upload</string>
+	<string name="retryFailed">Retry Failed</string>
+	<string name="deleteFailed">Delete Failed</string>
+	<string name="saveToDevice">Save to device, upload later</string>
 	<string name="uploading">Uploading…</string>
+	<string name="OR">OR</string>
 	<string name="thanks">Thank you for helping!</string>
+	<string name="thanksUploaded">Record uploaded.</string>
+	<string name="thanksSaved">Record saved.</string>
 	<string name="share">Share</string>
-    <string name="face_title">Face</string>
-    <string name="ear_title">Right Ear</string>
-    <string name="foot_title">Right Foot</string>
-	<string name="foot_reward">The data collected will be used to create software able to estimate the gestational age of babies.</string>
-	<string name="ear_reward">Estimating the correct gestational age of a premature baby can save their lives by allowing doctors to choose appropriate treatments.</string>
-    <string name="face_reward">Gestational age can be estimated by looking at the number of wrinkles in babies\' feet and the shape of their ears.</string>
+	<string name="done">Done</string>
 	<string name="baby_photo">Baby Photo</string>
 	<string name="retry">Retry</string>
+	<string name="photoLoadError">There was a problem loading this photo back from memory, this might be because the file had not finished writting yet, tap \'Retry\' to try again.</string>
 	<string name="error_upload">Error Uploading</string>
-    <string name="gender_question">Did you have a boy or a girl?</string>
-    <string-array name="gender_list">
-        <item>Boy</item>
-        <item>Girl</item>
-    </string-array>
-    <string name="ethnicity_question">What ethnicity is your baby?</string>
-    <string-array name="ethnicity_list">
-        <item>White</item>
-        <item>Asian</item>
-        <item>Black</item>
-        <item>Mixed</item>
-        <item>Other</item>
-        <item>Unknown</item>
-    </string-array>
-    <string name="weight_question">What did your baby weigh at birth?</string>
-    <string name="camera_confirm">You will now be asked to take photos of your baby\'s face, right ear and right foot. Try to take the picture with as much of your baby\'s face, ear or foot within the outline as possible.</string>
-    <string name="headCircumference_question">What was your baby\'s head circumference at birth?</string>
-    <string name="birthDate_question">What was the date of birth of your baby?</string>
-    <string name="expectedDate_question">What was your expected date of delivery?</string>
-    <string name="expectedBasis_question">What was your expected date of delivery based on?</string>
-    <string name="previous">Previous</string>
-    <string name="start">Start</string>
-    <string name="unknown">Unknown</string>
-    <string name="copyright">Copyright © 2015–2016 University of Nottingham</string>
-    <string name="next">Next</string>
-    <string-array name="expectedBasis_list">
-        <item>Ultrasound</item>
-        <item>Last Menstral Period</item>
-        <item>Estimate</item>
-        <item>Other</item>
-    </string-array>
+
+
+	<string name="previous">Previous</string>
+	<string name="start">Start</string>
+	<string name="uploadSaved">Upload saved records (%1$d)</string>
+	<string name="unknown">Unknown</string>
+	<string name="copyright">Copyright © 2015–2018 University of Nottingham</string>
+	<string name="next">Next</string>
+
+
+	<string name="consent_question"><b>Do you have informed consent?</b></string>
+	<string-array name="consent_list">
+		<item>Yes</item>
+		<item>No</item>
+	</string-array>
+	<string-array name="consent_list_valid_options">
+		<item>Yes</item>
+	</string-array>
+
+
+	<string name="gender_question"><b>Gender:</b></string>
+	<string-array name="gender_list">
+		<item>Male</item>
+		<item>Female</item>
+		<item>Unknown</item>
+	</string-array>
+
+	<string name="ethnicity_question"><b>Ethnicity:</b></string>
+	<string-array name="ethnicity_list">
+		<item>Indian</item>
+		<item>White</item>
+		<item>Black</item>
+		<item>Other Asian</item>
+		<item>Other</item>
+	</string-array>
+
+	<string name="weight_question"><b>Birth weight (grams):</b></string>
+
+	<string name="headCircumference_question"><b>Head Circumference (cm):</b></string>
+
+	<string name="birthDate_question"><b>Date of birth:</b></string>
+
+	<string name="expectedDate_question"><b>Expected date of delivery:</b></string>
+
+	<string name="expectedBasis_question">What was the expected date of delivery based on?</string>
+	<string-array name="expectedBasis_list">
+		<item>Ultrasound</item>
+		<item>Last Menstral Period</item>
+		<item>Estimate</item>
+		<item>Other</item>
+	</string-array>
+
+
+	<string name="userId_question">Please enter <b>user ID</b> (4 characters long).</string>
+	<string name="placeOfBirth_question"><b>Place of birth:</b> (tap to select)</string>
+	<string-array name="placeOfBirth_list">
+		<item>Site 1</item>
+		<item>Site 2</item>
+		<item>Site 3</item>
+		<item>Site 4</item>
+		<item>Site 5</item>
+		<item>Site 6</item>
+		<item>Site 7</item>
+		<item>Site 8</item>
+		<item>Site 9</item>
+		<item>Site 10</item>
+	</string-array>
+
+	<string name="studyId_question">Please enter the <b>study ID</b> (15 characters long).</string>
+	<string name="babiesAtBirth_question"><b>Number of babies at birth:</b></string>
+	<string-array name="babiesAtBirth_list">
+		<item>Singleton</item>
+		<item>Twin</item>
+		<item>Triplet</item>
+		<item>Quadruplet</item>
+		<item>Other</item>
+	</string-array>
+
+	<string name="modeOfDelivery_question"><b>Mode of delivery:</b></string>
+	<string-array name="modeOfDelivery_list">
+		<item>Vaginal</item>
+		<item>Instrumental</item>
+		<item>Caesarean Section</item>
+	</string-array>
+
+
+	<string name="imageDate_question">What date were the images taken?</string>
+
+	<string name="camera_confirm">You will now be asked to take photos of the baby\'s face, an ear and a foot. Try to take the picture with as much of the baby\'s face, ear or foot within the outline as possible. We will start with 3 photos of the face...</string>
+
+	<string name="face_title">Take picture 1/3 of the <b>face</b></string>
+	<string name="face2_title">Take picture 2/3 of the <b>face</b></string>
+	<string name="face3_title">Take picture 3/3 of the <b>face</b></string>
+
+	<string name="foot_title">Take picture 1/3 of the <b>foot</b></string>
+	<string name="foot2_title">Take picture 2/3 of the <b>foot</b></string>
+	<string name="foot3_title">Take picture 3/3 of the <b>foot</b></string>
+
+	<string name="ear_title">Take picture 1/3 of the <b>ear</b></string>
+	<string name="ear2_title">Take picture 2/3 of the <b>ear</b></string>
+	<string name="ear3_title">Take picture 3/3 of the <b>ear</b></string>
+
+	<string name="face_reward">Face 1/3</string>
+	<string name="face2_reward">Face 2/3</string>
+	<string name="face3_reward">Face 3/3</string>
+
+	<string name="earLeftRight_question">Now we are going to take 3 photos of an <b>ear</b>. Which ear are you going to photograph?</string>
+	<string-array name="earLeftRight_list">
+		<item>Left</item>
+		<item>Right</item>
+	</string-array>
+
+	<string name="ear_reward">Ear 1/3</string>
+	<string name="ear2_reward">Ear 2/3</string>
+	<string name="ear3_reward">Ear 3/3</string>
+
+	<string name="footLeftRight_question">Finally we are going to take 3 photos of a <b>foot</b>. Which foot are you going to photograph?</string>
+	<string-array name="footLeftRight_list">
+		<item>Left</item>
+		<item>Right</item>
+	</string-array>
+
+	<string name="foot_reward">Foot 1/3</string>
+	<string name="foot2_reward">Foot 2/3</string>
+	<string name="foot3_reward">Foot 3/3</string>
+
+	<string name="additionalInfo_question">Please enter any additional information.</string>
+	<string name="there_are_x_saved_files">There are %1$d saved records.</string>
+
+	<string name="preference_file_key">uk.ac.horizon.babyface.PRIVATE35ks9</string>
 </resources>
