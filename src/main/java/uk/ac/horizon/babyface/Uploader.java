@@ -1,11 +1,17 @@
 package uk.ac.horizon.babyface;
 
 
-import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
+import android.provider.MediaStore;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
+
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.security.ProviderInstaller;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,19 +32,47 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import uk.ac.horizon.babyface.activity.PagerActivity;
 
 public class Uploader
 {
 
-	private static final OkHttpClient client = new OkHttpClient();
+	private static OkHttpClient client = null;
 
 	public interface UploadListener {
 		void onUploadSuccess();
 		void onUploadFailure();
 	}
 
-	public static void uploadData(final Context context, Map<String, Object> data, final UploadListener listener) {
+	public static void uploadData(final Context context, final Map<String, Object> data, final UploadListener listener) {
+
+
+		if (client == null)
+		{
+			try
+			{
+				ProviderInstaller.installIfNeeded(context);
+			}
+			catch (GooglePlayServicesRepairableException e)
+			{
+				GooglePlayServicesUtil.showErrorNotification(
+						e.getConnectionStatusCode(), context);
+			}
+			catch (GooglePlayServicesNotAvailableException e)
+			{
+				Log.e("UPLOAD", "", e);
+			}
+
+			client = new OkHttpClient();
+
+			try
+			{
+				Log.i("UPLOAD", "getDefaultCipherSuites = " + TextUtils.join(",", client.sslSocketFactory().getDefaultCipherSuites()));
+				Log.i("UPLOAD", "getSupportedCipherSuites = " + TextUtils.join(",", client.sslSocketFactory().getSupportedCipherSuites()));
+			} catch (Exception e)
+			{
+				Log.e("UPLOAD", "", e);
+			}
+		}
 
 		final MultipartBody.Builder bodyBuilder = new MultipartBody.Builder();
 		bodyBuilder.setType(MultipartBody.FORM);
@@ -73,7 +107,12 @@ public class Uploader
 				bodyBuilder.addFormDataPart(param, param, RequestBody.create(imageType, (File) value));
 			}
 		}
-		bodyBuilder.addFormDataPart("country", getUserCountry(context));
+
+		String country = getUserCountry(context);
+		if (country != null)
+		{
+			bodyBuilder.addFormDataPart("country", country);
+		}
 
 		Request request = new Request.Builder()
 				.url("https://babyface.cs.nott.ac.uk/upload.php")
@@ -113,6 +152,50 @@ public class Uploader
 				}
 				else
 				{
+					// move images to uploaded folder
+					for(String param: data.keySet())
+					{
+						try
+						{
+							Object value = data.get(param);
+							File file = null;
+							if (value instanceof String && ((String) value).startsWith("file://"))
+							{
+								file = new File(((String) value).replace("file://", ""));
+								if (file.exists())
+								{
+									bodyBuilder.addFormDataPart(param, param, RequestBody.create(imageType, file));
+								}
+							}
+							else if (value instanceof File)
+							{
+								file = (File) value;
+							}
+
+							if (file != null)
+							{
+								File uploadedFileDir = new File(file.getParentFile(), "neogest_uploaded");
+								if (!uploadedFileDir.exists()) uploadedFileDir.mkdir();
+								File newFileLocation = new File(uploadedFileDir, file.getName());
+								file.renameTo(newFileLocation);
+								data.put(param, newFileLocation);
+
+								// update mediastore
+								ContentValues values = new ContentValues();
+								values.put(MediaStore.MediaColumns.DATA, newFileLocation.getAbsolutePath());
+								boolean successMediaStore = context.getContentResolver().update(
+										MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+										values,
+										MediaStore.MediaColumns.DATA + "='" + file.getAbsolutePath() + "'", null
+								) == 1;
+							}
+						}
+						catch (Exception e)
+						{
+							Log.w("UPLOAD", "Exception moving uploaded image after upload.", e);
+						}
+					}
+
 					listener.onUploadSuccess();
 				}
 			}
